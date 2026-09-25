@@ -1,50 +1,57 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include "events.h"
 
-#define MAX_EVENTS 100
-
-typedef struct {
-    char name[50];
-    char date[20];
-    char time[10];
-} Event;
-
-static Event events[MAX_EVENTS];
-static int event_count = 0;
-
-void add_event(const char *name, const char *date, const char *time) {
-    if (event_count < MAX_EVENTS) {
-        strncpy(events[event_count].name, name, sizeof(events[event_count].name) - 1);
-        strncpy(events[event_count].date, date, sizeof(events[event_count].date) - 1);
-        strncpy(events[event_count].time, time, sizeof(events[event_count].time) - 1);
-        event_count++;
-        printf("Event added: %s on %s at %s\n", name, date, time);
-    } else {
+void add_event(Event events[], int *event_count) {
+    if (*event_count >= MAX_EVENTS) {
         printf("Event limit reached. Cannot add more events.\n");
+        return;
     }
+
+    printf("Enter event name: ");
+    scanf(" %49[^\n]", events[*event_count].name);
+
+    printf("Enter date (YYYY-MM-DD): ");
+    scanf(" %10s", events[*event_count].date);
+
+    printf("Enter time (HH:MM): ");
+    scanf(" %5s", events[*event_count].time);
+
+    printf("Enter description: ");
+    scanf(" %199[^\n]", events[*event_count].description);
+
+    (*event_count)++;
+
+    printf("Event added successfully.\n");
 }
 
-void remove_event(int index) {
-    if (index < 0 || index >= event_count) {
+void remove_event(Event events[], int *event_count, int index) {
+    if (index < 0 || index >= *event_count) {
         printf("Invalid event index.\n");
         return;
     }
-    for (int i = index; i < event_count - 1; i++) {
+
+    for (int i = index; i < *event_count - 1; i++) {
         events[i] = events[i + 1];
     }
-    event_count--;
-    printf("Event removed.\n");
+
+    (*event_count)--;
+
+    printf("Event removed successfully.\n");
 }
 
-void list_events() {
+void list_events(const Event events[], int event_count) {
     if (event_count == 0) {
         printf("No events to display.\n");
         return;
     }
-    printf("Events:\n");
+
+    printf("\nEvents:\n");
+
     for (int i = 0; i < event_count; i++) {
-        printf("%d: %s on %s at %s\n", i, events[i].name, events[i].date, events[i].time);
+        printf("\n%d. %s\n", i + 1, events[i].name);
+        printf("   Date: %s\n", events[i].date);
+        printf("   Time: %s\n", events[i].time);
+        printf("   Description: %s\n", events[i].description);
     }
 }

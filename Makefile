@@ -1,7 +1,11 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -I./src
-SRC = src/main.c src/events.c src/utils.c
+
+CFLAGS = -Wall -Wextra
+
+SRC = main.c events.c utils.c
+
 OBJ = $(SRC:.c=.o)
+
 TARGET = event-tracker
 
 all: $(TARGET)
